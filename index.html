@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>วางแผนเส้นทางส่งของ จังหวัดร้อยเอ็ด</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;600;700&display=swap">
+<style>
+:root{--bg:#eef2f5;--panel:#fff;--ink:#12263a;--mute:#5d7184;--line:#d3dde6;--grid:#e3eaf0;--opt:#00796b;--orig:#c2410c;--ok:#e1f3ef;--onopt:#fff;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0d1822;--panel:#142330;--ink:#e6eef5;--mute:#8fa5b8;--line:#27394a;--grid:#1b2c3a;--opt:#4fd1bf;--orig:#fb923c;--ok:#12332f;--onopt:#06201c}}
+:root[data-theme="dark"]{--bg:#0d1822;--panel:#142330;--ink:#e6eef5;--mute:#8fa5b8;--line:#27394a;--grid:#1b2c3a;--opt:#4fd1bf;--orig:#fb923c;--ok:#12332f;--onopt:#06201c}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"IBM Plex Sans Thai","Noto Sans Thai",Tahoma,sans-serif;line-height:1.6}
+main{max-width:880px;margin:0 auto;padding:16px}
+h1{font-size:1.5rem;margin:8px 0 4px;font-weight:700}
+h2{font-size:1.05rem;margin:20px 0 8px}
+.sub{color:var(--mute);margin:0 0 12px;font-size:.95rem}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:10px}
+svg{display:block;width:100%;height:auto}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+button,.btn{font:inherit;padding:7px 12px;border-radius:8px;border:1px solid var(--line);background:var(--panel);color:var(--ink);cursor:pointer;text-decoration:none;display:inline-block}
+.chips button[aria-pressed="true"]{background:var(--opt);border-color:var(--opt);color:var(--onopt);font-weight:600}
+.primary{background:var(--opt);border-color:var(--opt);color:var(--onopt);font-weight:600}
+button:focus-visible,input:focus-visible,select:focus-visible,a:focus-visible{outline:3px solid var(--opt);outline-offset:2px}
+.key{display:flex;gap:16px;flex-wrap:wrap;font-size:.85rem;color:var(--mute);margin:8px 0}
+.key i{display:inline-block;width:22px;border-top:3px solid;vertical-align:middle;margin-right:6px}
+.set{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+label{font-size:.85rem;color:var(--mute);display:block}
+input,select{width:100%;font:inherit;padding:7px 9px;border:1px solid var(--line);border-radius:8px;background:var(--panel);color:var(--ink)}
+.res{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:10px;margin-top:6px}
+.box{padding:12px 14px}
+.box b{display:block;font-size:1.5rem;line-height:1.35}
+.box span{color:var(--mute);font-size:.85rem}
+.save{background:var(--ok);border-color:var(--opt)}
+.save b{color:var(--opt)}
+.order{margin:12px 0;overflow-wrap:anywhere}
+.note{color:var(--mute);font-size:.8rem;margin-top:16px}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:end}
+.row>div{flex:1 1 120px}
+table{width:100%;border-collapse:collapse;font-size:.9rem}th,td{padding:8px 10px;text-align:right;border-bottom:1px solid var(--line)}th:first-child,td:first-child{text-align:left}
+.br{display:flex;align-items:center;gap:8px;margin:6px 0;font-size:.9rem}.br span{width:36px;font-size:.9rem;color:var(--ink)}.br div{flex:1}.br i{display:block;height:16px;border-radius:4px;min-width:2px}.br em{font-style:normal;color:var(--mute);font-size:.85rem;white-space:nowrap}
+</style>
+</head>
+<body>
+<main>
+<h1>วางแผนเส้นทางส่งของ จังหวัดร้อยเอ็ด</h1>
+<p class="sub">เลือกต้นทางและจุดส่ง เลือกรถ แล้วดูเส้นทางที่สั้นที่สุดพร้อมค่าน้ำมันต่อวัน</p>
+
+<h2>1. เลือกต้นทาง (คลังสินค้า)</h2>
+<select id="depot" aria-label="ต้นทาง"></select>
+
+<h2>2. เลือกจุดส่ง</h2>
+<div class="chips" id="chips"></div>
+<div class="row" style="margin-top:10px">
+<div><label for="cn">เพิ่มจุดเอง: ชื่อ</label><input id="cn" placeholder="เช่น ร้านลุงสม ตลาดสด"></div>
+<div><label for="cc">พิกัด (คัดลอกจาก Google Maps)</label><input id="cc" placeholder="16.0538, 103.6520"></div>
+<div style="flex:0 0 auto"><button id="add">เพิ่มจุด</button></div>
+</div>
+<div class="row" style="margin-top:8px"><button id="demo">ใส่ตัวอย่าง 6 จุด</button><button id="clr">ล้างจุดส่ง</button></div>
+
+<div class="card" style="margin-top:14px"><svg id="m" viewBox="0 0 400 400" role="img" aria-label="แผนที่จุดส่งในจังหวัดร้อยเอ็ด"></svg></div>
+<div class="key"><span><i style="border-color:var(--opt)"></i>เส้นทางที่จัดใหม่</span><span><i style="border-color:var(--orig);border-top-style:dashed"></i>ตามลำดับที่เลือก</span></div>
+
+<h2>3. เลือกรถและค่าน้ำมัน</h2>
+<div class="set">
+<div><label for="car">รุ่นรถ</label><select id="car"></select></div>
+<div><label for="eff">อัตราสิ้นเปลือง (<span id="effu">กม./ลิตร</span>)</label><input id="eff" type="number" min="0.5" step="0.5"></div>
+<div><label for="ft">เชื้อเพลิง</label><select id="ft"></select></div>
+<div><label for="pr">ราคา ณ 10 พ.ย. 69 (<span id="pru">บาท/ลิตร</span>)</label><input id="pr" type="number" readonly></div>
+<div><label for="rf">ตัวคูณระยะถนน</label><input id="rf" type="number" min="1" max="2" step="0.05" value="1.3"></div>
+<div><label for="tr">รอบส่งต่อวัน</label><input id="tr" type="number" min="1" max="10" value="1"></div>
+<div><label for="dy">วันส่งต่อเดือน</label><input id="dy" type="number" min="1" max="31" value="26"></div>
+<div><label for="wage">ค่าแรงคนขับ (บาท/วัน)</label><input id="wage" type="number" min="0" value="400"></div>
+<div><label for="toll">ค่าทางด่วน (บาท/รอบ)</label><input id="toll" type="number" min="0" value="0"></div>
+<div><label for="mt">ค่าซ่อมบำรุง/ยาง (บาท/กม.)</label><input id="mt" type="number" min="0" step="0.1" value="1"></div>
+<div><label for="real">ระยะถนนจริงต่อรอบ (กม.) ถ้ามี</label><input id="real" type="number" min="0" step="0.1" placeholder="จาก Google Maps"></div>
+<div><label for="speed">ความเร็วเฉลี่ย (กม./ชม.)</label><input id="speed" type="number" min="5" value="45"></div>
+<div><label for="stm">เวลาแวะส่ง (นาที/จุด)</label><input id="stm" type="number" min="0" value="10"></div>
+<div><label for="st">เวลาออกจากคลัง</label><input id="st" type="time" value="08:00"></div>
+<div><label for="wt">น้ำหนักต่อจุด (กก.) 0 = ไม่คิด</label><input id="wt" type="number" min="0" value="0"></div>
+<div><label for="cap">ความจุรถ (กก.)</label><input id="cap" type="number" min="1" value="1000"></div>
+<div><label for="inv">เงินลงทุนระบบ/อบรม (บาท)</label><input id="inv" type="number" min="0" value="5000"></div>
+<div><label for="car2">เทียบกับรถอีกคัน</label><select id="car2"></select></div>
+</div>
+
+<h2>ผลลัพธ์</h2>
+<div class="res" id="res"></div>
+<p class="order" id="order"></p>
+<a class="btn primary" id="gm" target="_blank" rel="noopener" hidden>เปิดเส้นทางจริงใน Google Maps</a> <button id="cp">คัดลอกสรุปไปใส่รายงาน</button>
+<div id="more"></div>
+
+<p class="note">พิกัดที่ตั้งอำเภอเป็นค่าโดยประมาณ ระยะทางคิดจากเส้นตรงคูณตัวคูณระยะถนน (ปกติ 1.2 ถึง 1.4) ไม่ใช่ระยะถนนจริง อัตราสิ้นเปลืองเป็นค่าเฉลี่ยโดยประมาณจากการใช้งานจริง ขึ้นกับน้ำหนักบรรทุกและสภาพรถ ราคาเชื้อเพลิงและอัตราสิ้นเปลืองถูกล็อกไว้ ระบบคำนวณให้ตามรุ่นรถที่เลือก (แก้ได้เฉพาะเมื่อเลือก "กำหนดเอง") ราคาอ้างอิงปั๊มวันที่ 10 พ.ย. 2569 คือดีเซล 41.79, แก๊สโซฮอล์ 95 39.84, E20 31.80 บาท/ลิตร ส่วนไฟฟ้า 4.5 บาท/หน่วยเป็นค่าประมาณ หน้าเว็บดึงราคาเองอัตโนมัติไม่ได้ เมื่อราคาน้ำมันเปลี่ยนต้องอัปเดตค่าในหน้านี้ ค่าแรง ค่าทางด่วน และค่าซ่อมเป็นค่าสมมติที่ควรแก้ตามจริง ค่า CO₂ เป็นค่าประมาณ (ดีเซล 2.68 กก./ลิตร ไฟฟ้า 0.5 กก./หน่วย) เมื่อได้ระยะถนนจริงจากปุ่ม Google Maps ให้กรอกในช่อง "ระยะถนนจริง" ระบบจะใช้แทนค่าประมาณ ถ้ารถของคุณไม่มีในรายการ เลือก "กำหนดเอง" แล้วใส่ค่าเอง</p>
+</main>
+<script>
+(function(){
+var P=[["เมืองร้อยเอ็ด",16.054,103.652],["เกษตรวิสัย",15.700,103.580],["สุวรรณภูมิ",15.600,103.790],["จตุรพักตรพิมาน",16.150,103.600],["ธวัชบุรี",16.020,103.960],["เสลภูมิ",16.000,103.870],["พนมไพร",15.850,104.150],["โพนทอง",16.190,103.880],["ปทุมรัตต์",16.080,104.050],["จังหาร",15.730,103.930],["เมืองสรวง",15.620,103.900],["หนองพอก",16.000,104.120]].map(function(a){return{n:a[0],la:a[1],lo:a[2]}});
+var CARS=[
+["กระบะ ดีเซล",[["Toyota Hilux Revo 2.4",12,"d"],["Isuzu D-Max 1.9",13,"d"],["Ford Ranger 2.0",11.5,"d"],["Mitsubishi Triton 2.4",12,"d"],["Nissan Navara 2.3",11.5,"d"],["Mazda BT-50 1.9",12.5,"d"]]],
+["รถเก๋ง/SUV/MPV",[["Toyota Yaris Ativ 1.2",18,"g"],["Honda City 1.0 Turbo",17,"g"],["Honda Civic 1.5 Turbo",13,"g"],["Mitsubishi Xpander 1.5",13,"g"],["Suzuki Ertiga 1.5",14,"g"],["Toyota Corolla Cross Hybrid",20,"g"]]],
+["รถตู้และรถบรรทุก",[["Toyota Commuter (ดีเซล)",9,"d"],["Isuzu NLR รถบรรทุก 4 ล้อ",10,"d"],["Isuzu ELF / Hino 300 4 ล้อ",8,"d"],["รถบรรทุก 6 ล้อ",6,"d"]]],
+["มอเตอร์ไซค์",[["Honda Wave 110i",50,"g"],["Honda Click 125",45,"g"],["Honda PCX 160",40,"g"]]],
+["รถไฟฟ้า (กม./หน่วย)",[["BYD Atto 3",6.5,"ev"],["MG4 Electric",6.5,"ev"],["Tesla Model 3",7,"ev"]]],
+["อื่นๆ",[["กำหนดเอง",10,"d"]]]];
+var FT={d:["ดีเซล",41.79,"บาท/ลิตร","กม./ลิตร"],g:["แก๊สโซฮอล์ 95",39.84,"บาท/ลิตร","กม./ลิตร"],e20:["แก๊สโซฮอล์ E20",31.80,"บาท/ลิตร","กม./ลิตร"],ev:["ไฟฟ้า",4.5,"บาท/หน่วย","กม./หน่วย"]};
+var sel=[],lastText='',NS='http://www.w3.org/2000/svg';
+var $=function(i){return document.getElementById(i)};
+var rad=Math.PI/180;
+function hav(a,b){var dl=(b.la-a.la)*rad,dn=(b.lo-a.lo)*rad,x=Math.sin(dl/2)*Math.sin(dl/2)+Math.cos(a.la*rad)*Math.cos(b.la*rad)*Math.sin(dn/2)*Math.sin(dn/2);return 12742*Math.asin(Math.sqrt(x))}
+var RF=function(){return +$('rf').value||1.3};
+function dist(a,b){return hav(a,b)*RF()}
+function dep(){return P[+$('depot').value]}
+function len(path){var p=[dep()].concat(path,[dep()]),s=0;for(var i=0;i<p.length-1;i++)s+=dist(p[i],p[i+1]);return s}
+function optimize(list){
+ if(list.length<3)return list.slice();
+ var left=list.slice(),cur=dep(),out=[];
+ while(left.length){var bi=0,bd=1e9;for(var i=0;i<left.length;i++){var d=dist(cur,left[i]);if(d<bd){bd=d;bi=i}}cur=left.splice(bi,1)[0];out.push(cur)}
+ var best=len(out),imp=true;
+ while(imp){imp=false;for(var i=0;i<out.length-1;i++)for(var j=i+1;j<out.length;j++){var t=out.slice(0,i).concat(out.slice(i,j+1).reverse(),out.slice(j+1));var l=len(t);if(l<best-1e-9){out=t;best=l;imp=true}}}
+ return out}
+function el(n,a,p){var e=document.createElementNS(NS,n);for(var k in a)e.setAttribute(k,a[k]);if(p)p.appendChild(e);return e}
+var C=function(v){return getComputedStyle(document.documentElement).getPropertyValue(v).trim()};
+function proj(){
+ var la0=P.reduce(function(s,p){return s+p.la},0)/P.length,c=Math.cos(la0*rad);
+ var xs=P.map(function(p){return p.lo*c}),ys=P.map(function(p){return -p.la});
+ var x0=Math.min.apply(0,xs),x1=Math.max.apply(0,xs),y0=Math.min.apply(0,ys),y1=Math.max.apply(0,ys);
+ var k=Math.min(320/(x1-x0||1),320/(y1-y0||1)),ox=(400-(x1-x0)*k)/2,oy=(400-(y1-y0)*k)/2;
+ return function(p){return{x:ox+(p.lo*c-x0)*k,y:oy+(-p.la-y0)*k}}}
+function poly(path,color,dash,w,pr){
+ var pts=[dep()].concat(path,[dep()]).map(function(p){var q=pr(p);return q.x.toFixed(1)+','+q.y.toFixed(1)}).join(' ');
+ var a={points:pts,fill:'none',stroke:color,'stroke-width':w,'stroke-linejoin':'round','stroke-linecap':'round'};if(dash)a['stroke-dasharray']=dash;el('polyline',a,$('m'))}
+function f(n,d){return n.toLocaleString('th-TH',{minimumFractionDigits:d||0,maximumFractionDigits:d||0})}
+var boxes=[],CH=[];
+function slot(q,txt,off){var w=txt.length*5.8+4,h=11,c=[[off,3],[-off-w,3],[-w/2,-off+1],[-w/2,off+9]];
+ for(var i=0;i<c.length;i++){var x=q.x+c[i][0],y=q.y+c[i][1];if(x<2||x+w>398||y<10||y>396)continue;var ok=true;
+  for(var j=0;j<boxes.length;j++){var b=boxes[j];if(x<b[0]+b[2]&&x+w>b[0]&&y-h<b[1]&&y>b[1]-b[3]){ok=false;break}}
+  if(ok){boxes.push([x,y,w,h]);return{x:x,y:y}}}
+ return null}
+function kk(){var w=+$('wt').value||0,c=+$('cap').value||0;return w>0&&c>0?Math.max(1,Math.floor(c/w)):Infinity}
+function plans(list){var k=kk(),o=optimize(list),out=[];for(var i=0;i<o.length;i+=k)out.push(optimize(o.slice(i,i+k)));return out}
+function origPlans(list){var k=kk(),out=[];for(var i=0;i<list.length;i+=k)out.push(list.slice(i,i+k));return out}
+function plen(ch){return ch.reduce(function(s,c){return s+len(c)},0)}
+function olen(list){return plen(origPlans(list))}
+function dists(path){var a=olen(path),b=plen(CH),r=+$('real').value;if(r>0&&b>0){var s=r/b;a*=s;b*=s}return{a:a,b:b}}
+function box(b,s,c){return'<div class="card box'+(c?' save':'')+'"><span>'+s+'</span><b>'+b+'</b></div>'}
+function bar(l,v,mx,c){return'<div class="br"><span>'+l+'</span><div><i style="width:'+(mx?v/mx*100:0)+'%;background:'+c+'"></i></div><em>'+f(v)+' บาท</em></div>'}
+function calc(e,ft,D,tr){var fuel=D*tr/e,cost=fuel*FT[ft][1],wage=+$('wage').value||0,toll=(+$('toll').value||0)*tr,mt=(+$('mt').value||0)*D*tr;return{fuel:fuel,cost:cost,total:cost+wage+toll+mt,co2:fuel*({d:2.68,g:2.2,e20:2.0,ev:0.5}[ft]||2.2)}}
+function extras(path){
+ var m=$('more');if(!path.length){m.innerHTML='';return}
+ var d=dists(path),tr=+$('tr').value||1,dy=+$('dy').value||1,e=+$('eff').value||1,ft=$('ft').value,n=path.length;
+ var A=calc(e,ft,d.a,tr),B=calc(e,ft,d.b,tr);
+ var sp=+$('speed').value||40,sm=+$('stm').value||0,tm=function(D){return D/sp*60+n*sm};
+ var t0=($('st').value||'08:00').split(':'),s0=(+t0[0]||0)*60+(+t0[1]||0);
+ var hm=function(x){x=Math.round(x);return Math.floor(x/60)+' ชม. '+(x%60)+' นาที'};
+ var clk=function(x){x=Math.round(x)%1440;return('0'+Math.floor(x/60)).slice(-2)+':'+('0'+x%60).slice(-2)};
+ var h='<h2>เวลาและการบรรทุก</h2><div class="res">'+box(hm(tm(d.b)),'เวลาต่อรอบ (ก่อนจัด '+hm(tm(d.a))+')')+box(clk(s0+tm(d.b)),'กลับถึงคลัง (ออก '+clk(s0)+')')+box(CH.length+' เที่ยว/รอบ',kk()<Infinity?'แบ่งตามความจุ '+f(+$('cap').value)+' กก.':'ใส่น้ำหนักต่อจุดเพื่อแบ่งเที่ยว',kk()<Infinity)+'</div>';
+ var R=[['ระยะทาง/รอบ (กม.)',d.a,d.b,1],['เวลา/รอบ (นาที)',tm(d.a),tm(d.b),0],['ค่าเชื้อเพลิง/วัน (บาท)',A.cost,B.cost,0],['ต้นทุนรวม/วัน (บาท)',A.total,B.total,0],['ต้นทุนรวม/เดือน (บาท)',A.total*dy,B.total*dy,0],['CO₂/วัน (กก.)',A.co2,B.co2,1]];
+ h+='<h2>ก่อนและหลังจัดเส้นทางใหม่</h2><div class="card" style="overflow-x:auto"><table><tr><th></th><th>ก่อน</th><th>หลัง</th><th>ลด</th></tr>'+R.map(function(r){return'<tr><td>'+r[0]+'</td><td>'+f(r[1],r[3])+'</td><td>'+f(r[2],r[3])+'</td><td>'+f(r[1]?(r[1]-r[2])/r[1]*100:0,1)+'%</td></tr>'}).join('')+'</table></div>';
+ var mx=Math.max(A.total,B.total)*dy;
+ h+='<div class="card box" style="margin-top:10px"><span>ต้นทุนรวมต่อเดือน</span>'+bar('ก่อน',A.total*dy,mx,'var(--orig)')+bar('หลัง',B.total*dy,mx,'var(--opt)')+'</div>';
+ var c2=flat()[+$('car2').value],C2=calc(c2[1],c2[2],d.b,tr),n1=$('car').selectedOptions[0].text,sv=(B.total-C2.total)*dy;
+ var CR=[['ค่าเชื้อเพลิง/วัน (บาท)',B.cost,C2.cost,0],['ต้นทุนรวม/วัน (บาท)',B.total,C2.total,0],['ต้นทุนรวม/เดือน (บาท)',B.total*dy,C2.total*dy,0],['CO₂/วัน (กก.)',B.co2,C2.co2,1]];
+ h+='<h2>เทียบรถ 2 คัน (เส้นทางจัดใหม่ ไม่คิดความจุ)</h2><div class="card" style="overflow-x:auto"><table><tr><th></th><th>'+n1+'</th><th>'+c2[0]+'</th></tr>'+CR.map(function(r){return'<tr><td>'+r[0]+'</td><td>'+f(r[1],r[3])+'</td><td>'+f(r[2],r[3])+'</td></tr>'}).join('')+'</table></div><p class="order">'+(sv>0?c2[0]+' ถูกกว่า ประหยัดราว '+f(sv)+' บาท/เดือน':sv<0?n1+' ถูกกว่า ประหยัดราว '+f(-sv)+' บาท/เดือน':'ต้นทุนเท่ากัน')+'</p>';
+ var sm2=(A.total-B.total)*dy,inv=+$('inv').value||0;
+ h+='<h2>คืนทุนและผลของราคาเชื้อเพลิง</h2><div class="res">'+box(sm2>0&&inv>0?f(inv/sm2,1)+' เดือน':'-','คืนทุนเงินลงทุน '+f(inv)+' บาท (ประหยัด '+f(Math.max(sm2,0))+' บาท/เดือน)',sm2>0)+'</div>';
+ var p0=FT[ft][1],base=B.total-B.cost,ds=ft==='ev'?[-1,0,1,2]:[-5,0,5,10];
+ h+='<div class="card" style="overflow-x:auto;margin-top:10px"><table><tr><th>ราคาเชื้อเพลิงเปลี่ยน</th><th>ราคา</th><th>ต้นทุนรวม/เดือน</th></tr>'+ds.map(function(x){return'<tr><td>'+(x>0?'+':'')+x+' บาท</td><td>'+f(p0+x,2)+'</td><td>'+f((B.fuel*(p0+x)+base)*dy)+' บาท</td></tr>'}).join('')+'</table></div>';
+ m.innerHTML=h}
+function draw(){
+ var svg=$('m');svg.innerHTML='';var pr=proj();
+ for(var g=0;g<=400;g+=50){el('line',{x1:g,y1:0,x2:g,y2:400,stroke:C('--grid')},svg);el('line',{x1:0,y1:g,x2:400,y2:g,stroke:C('--grid')},svg)}
+ var path=sel.map(function(i){return P[i]});CH=plans(path);var opt=[].concat.apply([],CH);
+ if(path.length>1){origPlans(path).forEach(function(c){poly(c,C('--orig'),'6 5',2,pr)});CH.forEach(function(c){poly(c,C('--opt'),null,3.5,pr)})}
+ boxes=[];var lp=[];opt.forEach(function(p){lp.push(slot(pr(p),p.n,13))});var dq=pr(dep()),dl=slot(dq,dep().n+' (คลัง)',12)||{x:dq.x+12,y:dq.y+4};
+ P.forEach(function(p,i){if(sel.indexOf(i)<0&&i!=+$('depot').value){var q=pr(p);el('circle',{cx:q.x,cy:q.y,r:3,fill:C('--mute')},svg);var s=slot(q,p.n,5);if(s){var t=el('text',{x:s.x,y:s.y,'font-size':8.5,fill:C('--mute')},svg);t.textContent=p.n}}});
+ opt.forEach(function(p,k){var q=pr(p),g=el('g',{},svg);el('circle',{cx:q.x,cy:q.y,r:10,fill:C('--panel'),stroke:C('--opt'),'stroke-width':2.5},g);
+  var t=el('text',{x:q.x,y:q.y+3.5,'text-anchor':'middle','font-size':10,'font-weight':700,fill:C('--ink')},g);t.textContent=k+1;
+  var s=lp[k]||{x:q.x+13,y:q.y+3};var n=el('text',{x:s.x,y:s.y,'font-size':9.5,'font-weight':600,fill:C('--ink')},g);n.textContent=p.n});
+ var d=pr(dep());el('rect',{x:d.x-8,y:d.y-8,width:16,height:16,rx:3,fill:C('--ink')},svg);
+ var t=el('text',{x:dl.x,y:dl.y,'font-size':10,'font-weight':700,fill:C('--ink')},svg);t.textContent=dep().n+' (คลัง)';
+ report(path,opt);extras(path)}
+function report(path,opt){
+ var r=$('res'),o=$('order'),gm=$('gm');
+ if(!path.length){r.innerHTML='<div class="card box"><span>เลือกจุดส่งอย่างน้อย 1 จุดเพื่อดูผลลัพธ์</span></div>';o.textContent='';gm.hidden=true;lastText='';return}
+ var a=olen(path),b=plen(CH),tr=+$('tr').value||1,dy=+$('dy').value||1,e=+$('eff').value||1,pr=+$('pr').value||0,ev=$('ft').value==='ev',u=ev?'หน่วย':'ลิตร';
+ var real=+$('real').value;if(real>0&&b>0){var sc=real/b;a*=sc;b*=sc}
+ var perDay=b*tr,fuel=perDay/e,cost=fuel*pr,cmo=cost*dy,saveMo=(a-b)*tr/e*pr*dy,pct=a?(a-b)/a*100:0;
+ var wage=+$('wage').value||0,toll=(+$('toll').value||0)*tr,mt=(+$('mt').value||0)*perDay,total=cost+wage+toll+mt,stops=path.length*tr,co2=fuel*({d:2.68,g:2.2,e20:2.0,ev:0.5}[$('ft').value]||2.2);
+ var extra='<div class="card box save"><span>ต้นทุนรวมต่อวัน (รวมค่าแรง ทางด่วน ซ่อม)</span><b>'+f(total)+' บาท</b></div><div class="card box"><span>ต้นทุนต่อจุดส่ง</span><b>'+f(total/stops,1)+' บาท</b></div><div class="card box"><span>ต้นทุนรวมต่อเดือน</span><b>'+f(total*dy)+' บาท</b></div><div class="card box"><span>CO₂ ต่อวัน (ประมาณ)</span><b>'+f(co2,1)+' กก.</b></div>';
+ lastText='สรุปเส้นทางส่งของ จ.ร้อยเอ็ด\nต้นทาง: '+dep().n+'\nลำดับ: '+opt.map(function(p){return p.n}).join(' > ')+'\nระยะทางต่อรอบ: '+f(b,1)+' กม. (จัดใหม่) เทียบ '+f(a,1)+' กม. (ตามลำดับเดิม)'+(real>0?' [ใช้ระยะถนนจริงที่กรอก]':' [ประมาณจากเส้นตรง x '+RF()+']')+'\nรถ: '+$('car').selectedOptions[0].text+' ('+e+' '+FT[$('ft').value][3]+')\nใช้เชื้อเพลิงต่อวัน: '+f(fuel,1)+' '+u+'\nค่าเชื้อเพลิงต่อวัน: '+f(cost)+' บาท\nต้นทุนรวมต่อวัน: '+f(total)+' บาท\nต้นทุนต่อจุดส่ง: '+f(total/stops,1)+' บาท\nต้นทุนรวมต่อเดือน: '+f(total*dy)+' บาท\nCO2 ต่อวัน (ประมาณ): '+f(co2,1)+' กก.';
+ r.innerHTML='<div class="card box"><span>ระยะทางต่อรอบ (จัดใหม่)</span><b>'+f(b,1)+' กม.</b></div>'+
+ '<div class="card box"><span>ใช้'+(ev?'ไฟ':'น้ำมัน')+'ต่อวัน</span><b>'+f(fuel,1)+' '+u+'</b></div>'+
+ '<div class="card box save"><span>ค่า'+(ev?'ไฟ':'น้ำมัน')+'ต่อวัน</span><b>'+f(cost)+' บาท</b></div>'+
+ '<div class="card box"><span>ต่อเดือน ('+dy+' วัน)</span><b>'+f(cmo)+' บาท</b></div>'+
+ (path.length>2?'<div class="card box save"><span>ประหยัดเมื่อจัดเส้นทางใหม่</span><b>'+f(pct,1)+'% (ราว '+f(saveMo)+' บาท/เดือน)</b></div>':'')+extra;
+ o.innerHTML='<b>ลำดับที่แนะนำ:</b> '+CH.map(function(c,i){return(CH.length>1?'<br>รอบ '+(i+1)+': ':'')+dep().n+' → '+c.map(function(p){return p.n}).join(' → ')+' → '+dep().n}).join('');
+ var w=opt.slice(0,9),ll=function(p){return p.la+','+p.lo};
+ var last=opt[opt.length-1];
+ gm.href='https://www.google.com/maps/dir/?api=1&travelmode=driving&origin='+ll(dep())+'&destination='+ll(dep())+'&waypoints='+w.map(ll).join('|');
+ gm.hidden=false;gm.textContent=opt.length>9?'เปิดใน Google Maps (แสดง 9 จุดแรก)':'เปิดเส้นทางจริงใน Google Maps'}
+function chips(){
+ var c=$('chips');c.innerHTML='';
+ P.forEach(function(p,i){if(i==+$('depot').value)return;var b=document.createElement('button');b.textContent=p.n;b.setAttribute('aria-pressed',sel.indexOf(i)>=0);
+  b.onclick=function(){var k=sel.indexOf(i);if(k>=0)sel.splice(k,1);else sel.push(i);chips();draw()};c.appendChild(b)})}
+function fill(){
+ var v=$('depot').value||0;
+ $('depot').innerHTML=P.map(function(p,i){return'<option value="'+i+'">'+p.n+'</option>'}).join('');$('depot').value=v}
+function carInit(){
+ var h='',n=0;CARS.forEach(function(g){h+='<optgroup label="'+g[0]+'">';g[1].forEach(function(c){h+='<option value="'+n+'">'+c[0]+'</option>';n++});h+='</optgroup>'});$('car').innerHTML=h;$('car2').innerHTML=h;$('car2').value=17;
+ $('ft').innerHTML=Object.keys(FT).map(function(k){return'<option value="'+k+'">'+FT[k][0]+'</option>'}).join('');
+ setCar()}
+function flat(){var a=[];CARS.forEach(function(g){a=a.concat(g[1])});return a}
+function setCar(){var c=flat()[+$('car').value],cu=c[0]==='กำหนดเอง';$('eff').value=c[1];$('ft').value=c[2];$('eff').readOnly=!cu;$('ft').disabled=!cu;setFt(true)}
+function setFt(){var t=FT[$('ft').value];$('pr').value=t[1];$('pru').textContent=t[2];$('effu').textContent=t[3]}
+$('car').onchange=function(){setCar();draw()};$('car2').onchange=draw;
+$('ft').onchange=function(){setFt();draw()};
+['eff','pr','rf','tr','dy','wage','toll','mt','real','speed','stm','st','wt','cap','inv'].forEach(function(i){$(i).oninput=draw});
+$('depot').onchange=function(){var d=+$('depot').value,k=sel.indexOf(d);if(k>=0)sel.splice(k,1);chips();draw()};
+$('demo').onclick=function(){var d=+$('depot').value;sel=[1,4,7,2,6,3].filter(function(i){return i!==d});chips();draw()};
+$('clr').onclick=function(){sel=[];chips();draw()};
+$('add').onclick=function(){
+ var n=$('cn').value.trim(),m=$('cc').value.match(/(-?\d+(?:\.\d+)?)\s*[, ]\s*(-?\d+(?:\.\d+)?)/);
+ if(!n||!m){alert('กรอกชื่อ และพิกัดรูปแบบ 16.0538, 103.6520');return}
+ var la=+m[1],lo=+m[2];if(la<15||la>16.6||lo<103||lo>104.5){alert('พิกัดอยู่นอกพื้นที่ร้อยเอ็ด ตรวจสอบว่าเรียงเป็น ละติจูด, ลองจิจูด');return}
+ P.push({n:n,la:la,lo:lo});sel.push(P.length-1);fill();$('depot').value=$('depot').value;$('cn').value='';$('cc').value='';chips();draw()};
+$('cp').onclick=function(){var t=lastText;if(!t)return;var done=function(){$('cp').textContent='คัดลอกแล้ว'};
+ function fb(){var x=document.createElement('textarea');x.value=t;document.body.appendChild(x);x.select();try{document.execCommand('copy');done()}catch(e){}document.body.removeChild(x)}
+ try{navigator.clipboard.writeText(t).then(done,fb)}catch(e){fb()}};
+if(window.matchMedia)window.matchMedia('(prefers-color-scheme:dark)').addEventListener('change',draw);
+fill();carInit();chips();draw();
+})();
+</script>
+</body>
+</html>
